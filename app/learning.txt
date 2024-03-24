@@ -1,0 +1,73 @@
+1. Fast api routes
+2. used a fastapi database router to connect to postgre server for that we used pscycog module
+3. sql alchemy has a limitation , it will create the databse using (models.Base.metadata.create_all(bind=engine))
+ and it will see the __tablename__ , if it alrerady exits then it will not touch/modify the table
+
+
+ JWT - tokens
+
+ flow :
+
+ client (/login  with some info (username)) --> Api -->server -->verify-->token sent to client
+ -->client(/post + token) --> api will check the token
+
+ jwt token :
+
+ 1. header(algorithm used , type of algo)
+ 2. payload(info from frontend)(userid , expiration time)
+ 3.Signature
+
+ Signature --> payload + header + SECRET KEY (this is ony there with our server)
+
+ Lets say a user wants to do some shady things , so he changes the payload 
+
+ token( header , payload , signature__1) --> verify --> payload+header + SECRET KEY (In server) == TestSignature
+
+ since TestSignature != Signature (access denied) 
+
+ We need to install python-jose to generate and verify the JWT tokens in Python:
+
+Depends()-->
+
+ Define Dependencies: You can create reusable dependency functions that encapsulate some logic or functionality. 
+ These functions can be simple utility functions, database connection handlers, or even complex authentication mechanisms.
+
+
+Inject Dependencies: You can inject these dependency functions into your API routes or operations using the depends() decorator. 
+When you decorate a route function with depends(), FastAPI will automatically execute the 
+specified dependency function(s) before running the route function.
+
+
+
+So, in summary, oauth2_scheme is an instance of OAuth2PasswordBearer representing an OAuth 2.0 
+authentication scheme using the Password Flow, with the token URL set to /login in your FastAPI application.
+
+
+OAuth2PasswordBearer --> (pydantic model)this is used to define  and validate scheme and get details from url   vs   
+ OAuth2PasswordRequestForm--> this is data type
+
+
+
+IMPORTANT :
+
+
+so in auth.py i have passed the user_id as int(after queying ){ access_token = oauth.create_access_token(data= {"user_id": user.id})}
+2. IN verify access_token function the schema is unable to get verified with defined pydantic model Tokendata
+3.In tokendata the id was mentioned as str
+4.So while encoding the jwt token convert the id into str , or else u will get pydantic error
+
+
+ALL THE db.query(models.post) are jabstracted queries not models or data
+
+
+1.alembic init <foldername>
+2.alembic revision -m "first database schema"
+3. alembic upgrade <revision id>
+4. alembic downgrade +- number
+5. alembic current -->gives the current revision id
+
+
+
+url = 'postgresql://postgres:Apple%%402002@localhost:5432/fastapi'
+
+config.set_main_option("sqlalchemy.url" ,url )
